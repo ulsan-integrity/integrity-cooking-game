@@ -125,7 +125,8 @@
 </section>
 
 <section class="view hidden" id="rankingView">
-  <section class="rank-card panel"><div class="rank-head"><img class="rank-mascot brand-asset" data-brand-asset="mascotWave" alt="울산도시공사 마스코트"><div class="eyebrow">Local Ranking</div><h1>셰프 랭킹</h1><p>이 브라우저에 저장된 기록입니다.</p></div><div class="ranking-list" id="rankingList"></div><div class="rank-actions"><button class="primary" id="rankingPlayButton" type="button">요리하기</button></div></section>
+  <section class="rank-card panel"><div class="rank-head"><img class="rank-mascot brand-asset" data-brand-asset="mascotWave" alt="울산도시공사 마스코트"><div class="eyebrow">Online Ranking</div><h1>전체 셰프 랭킹</h1><p>게임을 완료한 참여자의 개인 최고점 기준입니다.</p>
+</div><div class="ranking-list" id="rankingList"></div><div class="rank-actions"><button class="primary" id="rankingPlayButton" type="button">요리하기</button></div></section>
 </section>
 </main>
 <footer class="app-footer"><div class="footer-copy">청렴한 한끼 · 울산도시공사 교육용 시뮬레이션</div><img class="corp-logo brand-asset" data-brand-asset="logo" alt="울산도시공사"></footer>
@@ -264,11 +265,19 @@ function selectRound(difficulty){
   return chosen.map((q,i)=>({...q,ingredient:INGREDIENTS[(i+Math.floor(Math.random()*INGREDIENTS.length))%INGREDIENTS.length]}));
 }
 function startGame(){
-  state.round=selectRound(state.difficulty);state.index=0;state.decisions=[];state.selected=[];state.result=null;state.locked=false;
+   state.round=selectRound(state.difficulty);state.index=0;state.decisions=[];state.selected=[];state.result=null;state.locked=false;
   $('gameChefName').textContent=chefName(state.name);
   $('gameDifficulty').textContent=DIFFICULTY[state.difficulty].label;
   $('streakMetric').textContent='—';
   show('gameView');renderQuestion();
+
+  // Firebase 온라인 통계: 게임 시작 기록
+  if(window.IntegrityCloud){
+    window.IntegrityCloud.startGame({
+      nickname: state.name,
+      difficulty: state.difficulty
+    }).catch(err=>console.warn('Firebase startGame 저장 실패:',err));
+  }
 }
 function renderQuestion(){
   const done=state.index>=ROUND_SIZE;
@@ -297,7 +306,30 @@ function evaluate(){
   return {answers,correct,integrity,corruption,tasty,base,streakBonus,perfect,tastyBonus,difficulty,score,maxStreak};
 }
 function saveResult(r){let players=getPlayers();let p=players.find(x=>x.id===state.id);if(!p){p={id:state.id,name:state.name,total:0,best:0,games:0};players.push(p)}p.name=state.name;p.total=(p.total||0)+r.score;p.best=Math.max(p.best||0,r.score);p.games=(p.games||0)+1;savePlayers(players)}
-function cook(){soundClick();state.result=evaluate();saveResult(state.result);renderResult();show('resultView');if(state.result.tasty){soundSuccess();confetti()}else soundFail()}
+function cook(){
+  soundClick();
+  state.result=evaluate();
+
+  // 기존 로컬 저장은 유지
+  saveResult(state.result);
+
+  // Firebase 전체 랭킹/세션 저장
+  if(window.IntegrityCloud){
+    window.IntegrityCloud.completeGame({
+      nickname: state.name,
+      difficulty: state.difficulty,
+      score: state.result.score,
+      correct: state.result.correct,
+      maxStreak: state.result.maxStreak,
+      answers: state.result.answers
+    }).catch(err=>console.warn('Firebase completeGame 저장 실패:',err));
+  }
+
+  renderResult();
+  show('resultView');
+  if(state.result.tasty){soundSuccess();confetti()}else soundFail();
+}
+
 function renderResult(){
   hydrateBrandAssets();
   const r=state.result;
@@ -322,11 +354,60 @@ function renderResult(){
   }).join('');
 }
 function confetti(){const colors=['#ef7c22','#6e9b3a','#f4c542','#d94a2f','#6b9bd2'];for(let i=0;i<55;i++){const c=document.createElement('i');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.top='-20px';c.style.background=rand(colors);c.style.animationDelay=Math.random()*.55+'s';c.style.animationDuration=1.1+Math.random()*.9+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),2300)}}
-function renderRanking(){
+async function renderRanking(){
   hydrateBrandAssets();
+
+  // 1) Firebase가 정상 연결되면 전체 온라인 랭킹을 표시
+  if(window.IntegrityCloud){
+    try{
+      $('rankingList').innerHTML='<div class="empty-state">전체 랭킹을 불러오는 중입니다...</div>';
+      show('rankingView');
+
+      const [rows, stats] = await Promise.all([
+        window.IntegrityCloud.getRanking(10),
+        window.IntegrityCloud.getPublicStats()
+      ]);
+
+      if(!rows.length){
+        $('rankingList').innerHTML='<div class="empty-state">첫 번째 온라인 셰프가 되어보세요.</div>';
+        return;
+      }
+
+      const myUid = window.IntegrityCloud.uid;
+      const summary = `
+        <div class="rank-row" style="grid-template-columns:1fr;text-align:center;background:var(--surface-2)">
+          <div><b>완료 참여자 ${stats.players.toLocaleString('ko-KR')}명 · 전체 플레이 ${stats.games.toLocaleString('ko-KR')}회</b><br>
+          <small>평균 최고점 ${stats.averageBest.toFixed(1)}점</small></div>
+        </div>`;
+
+      const list = rows.map((x,i)=>`
+        <div class="rank-row ${x.uid===myUid?'me':''} ${i<3?'top-rank':''}">
+          <div class="rank-num">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+          <div class="rank-name">
+            <b>${escapeHtml(chefName(x.nickname||'익명'))}</b>
+            <small>${x.gamesCompleted||0}회 완료 · 최고 정답 ${x.bestCorrect||0}/10</small>
+          </div>
+          <div class="rank-score">
+            <b>${Number(x.bestScore||0).toLocaleString('ko-KR')}</b>
+            <small>최고점</small>
+          </div>
+        </div>`).join('');
+
+      $('rankingList').innerHTML=summary+list;
+      return;
+    }catch(err){
+      console.warn('Firebase ranking 조회 실패. 로컬 랭킹으로 대체합니다:',err);
+    }
+  }
+
+  // 2) Firebase 오류 시 기존 로컬 랭킹으로 자동 대체
   const p=[...getPlayers()].sort((a,b)=>(b.total||0)-(a.total||0)||(b.best||0)-(a.best||0));
-  if(!p.length){$('rankingList').innerHTML='<div class="empty-state">첫 번째 셰프가 되어보세요.</div>';show('rankingView');return;}
-  $('rankingList').innerHTML=p.map((x,i)=>`<div class="rank-row ${x.id===state.id?'me':''} ${i<3?'top-rank':''}"><div class="rank-num">${i<3?['🥇','🥈','🥉'][i]:i+1}</div><div class="rank-name"><b>${escapeHtml(chefName(x.name))}</b><small>${x.games||0}회 · 최고 ${x.best||0}점</small></div><div class="rank-score"><b>${(x.total||0).toLocaleString('ko-KR')}</b><small>누적</small></div></div>`).join('');
+  if(!p.length){
+    $('rankingList').innerHTML='<div class="empty-state">첫 번째 셰프가 되어보세요.</div>';
+    show('rankingView');
+    return;
+  }
+  $('rankingList').innerHTML='<div class="empty-state" style="padding:14px">온라인 랭킹 연결이 불안정해 이 기기의 기록을 표시합니다.</div>'+p.map((x,i)=>`<div class="rank-row ${x.id===state.id?'me':''} ${i<3?'top-rank':''}"><div class="rank-num">${i<3?['🥇','🥈','🥉'][i]:i+1}</div><div class="rank-name"><b>${escapeHtml(chefName(x.name))}</b><small>${x.games||0}회 · 최고 ${x.best||0}점</small></div><div class="rank-score"><b>${(x.total||0).toLocaleString('ko-KR')}</b><small>로컬 누적</small></div></div>`).join('');
   show('rankingView');
 }
 function goWelcome(){show('welcomeView');$('nameInput').value=state.name;$('profileChip').classList.toggle('hidden',!state.name);$('nameInput').focus({preventScroll:true});}
@@ -370,5 +451,6 @@ updateNetworkStatus();
 (function init(){hydrateBrandAssets();updateSound();let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE.current))}catch{}if(saved){state.id=saved.id||playerId();state.name=saved.name||'';$('nameInput').value=state.name;if(state.name){$('profileChip').textContent=chefName(state.name);$('profileChip').classList.remove('hidden')}}show('welcomeView')})();
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=14',{scope:'./',updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));}
 </script>
+<script type="module" src="./firebase-bridge.js"></script>
 </body>
 </html>
