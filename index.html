@@ -75,7 +75,10 @@
       <div class="hero-art"><div class="hero-badge">10개 사례 · 약 3분</div><span class="hero-spark s1" aria-hidden="true"></span><span class="hero-spark s2" aria-hidden="true"></span><span class="hero-shadow" aria-hidden="true"></span><img class="hero-mascot brand-asset" data-brand-asset="mascotHero" alt="청렴한 한끼를 안내하는 울산도시공사 마스코트"></div>
     </section>
     <form class="setup panel" id="setupForm">
-      <h2>새 요리 시작</h2><p class="setup-sub">셰프 이름과 난이도를 선택하세요.</p>
+     <h2>새 요리 시작</h2>
+<p class="setup-sub">
+  랭킹에 표시할 셰프 이름과 난이도를 선택하세요.
+</p>
       <label class="field-label" for="nameInput">셰프 이름</label>
       <div class="name-wrap"><input class="name-input" id="nameInput" maxlength="12" placeholder="예: 최주임" autocomplete="nickname"><span class="name-suffix">셰프님</span></div>
       <div class="error" id="nameError" aria-live="polite"></div>
@@ -132,8 +135,109 @@
 <footer class="app-footer"><div class="footer-copy">청렴한 한끼 · 울산도시공사 교육용 시뮬레이션</div><img class="corp-logo brand-asset" data-brand-asset="logo" alt="울산도시공사"></footer>
 </div>
 <dialog class="modal" id="infoModal">
-  <div class="modal-head"><h2>이용 안내</h2><button class="icon-btn" id="closeInfo" type="button" aria-label="닫기">×</button></div>
-  <div class="modal-body"><div class="info-list"><div class="info-item"><i>🍲</i><div><b>요리 규칙</b><p>청렴 사례는 냄비에 넣고, 부패·부적절 사례는 제외합니다.</p></div></div><div class="info-item"><i>✓</i><div><b>성공 기준</b><p>청렴 재료 3개 이상, 부패 재료 2개 미만이면 요리가 완성됩니다.</p></div></div><div class="info-item"><i>⚖</i><div><b>법령 안내</b><p>교육용 일반 기준입니다. 실제 업무는 최신 법령, 유권해석, 소속기관 행동강령을 확인하세요.</p></div></div><div class="info-item"><i>◉</i><div><b>기록 저장</b><p>이름과 랭킹은 현재 브라우저에만 저장됩니다.</p></div></div></div><div class="version-row"><span>법령 기준 2026.07.28 · <a href="privacy-policy.html" target="_blank" rel="noopener">개인정보 안내</a></span><span id="appVersion"></span></div></div>
+  <div class="modal-head">
+    <h2>이용 안내</h2>
+    <button class="icon-btn" id="closeInfo" type="button" aria-label="닫기">×</button>
+  </div>
+
+  <div class="modal-body">
+    <div class="info-list">
+
+      <div class="info-item">
+        <i>🍲</i>
+        <div>
+          <b>요리 규칙</b>
+          <p>
+            청렴한 사례는 냄비에 넣고, 부패·부적절한 사례는 제외하세요.
+            선택한 난이도에서 10개의 사례가 출제됩니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i>✓</i>
+        <div>
+          <b>성공 기준</b>
+          <p>
+            청렴 재료를 3개 이상 넣고, 부패·부적절 재료를
+            2개 미만으로 넣으면 요리가 완성됩니다.
+            정답과 연속 정답, 난이도 등에 따라 점수가 계산됩니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i>🏆</i>
+        <div>
+          <b>온라인 랭킹</b>
+          <p>
+            게임을 완료하면 개인 최고점이 전체 셰프 랭킹에 반영됩니다.
+            동일한 기기뿐 아니라 다른 휴대전화와 PC에서 참여한 기록도
+            온라인 랭킹에서 함께 확인할 수 있습니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i>☁</i>
+        <div>
+          <b>게임 기록 저장</b>
+          <p>
+            게임 운영 및 랭킹 제공을 위해 셰프 닉네임, 난이도,
+            점수, 정답 수, 게임 시작·완료 기록 등이
+            온라인 데이터베이스에 저장될 수 있습니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i>👤</i>
+        <div>
+          <b>닉네임 사용 안내</b>
+          <p>
+            랭킹에 입력한 셰프 이름이 표시될 수 있으므로
+            실명이나 개인정보 대신 식별하기 쉬운 닉네임 사용을 권장합니다.
+            전화번호, 이메일 등 불필요한 개인정보는 입력하지 마세요.
+          </p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i>📊</i>
+        <div>
+          <b>이용 통계</b>
+          <p>
+            교육 운영을 위해 참여자 수, 플레이 횟수, 평균 점수,
+            난이도별 이용 현황 및 문항별 정답·오답 현황 등이
+            통계 형태로 활용될 수 있습니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i>⚖</i>
+        <div>
+          <b>법령 안내</b>
+          <p>
+            본 게임의 해설은 청렴교육을 위한 일반적인 판단 기준입니다.
+            실제 업무에서는 최신 법령, 유권해석 및
+            울산도시공사 내부 규정·행동강령을 반드시 다시 확인하세요.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="version-row">
+      <span>
+        법령 기준 2026.07.28 ·
+        <a href="privacy-policy.html"
+           target="_blank"
+           rel="noopener">개인정보 안내</a>
+      </span>
+      <span id="appVersion"></span>
+    </div>
+  </div>
 </dialog>
 <div class="network-status" id="networkStatus" aria-live="polite"><i aria-hidden="true"></i><span>온라인</span></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
