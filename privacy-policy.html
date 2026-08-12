@@ -1,1 +1,880 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#2f6a4f"><title>개인정보 처리 안내 · 청렴한 한끼</title><style>body{margin:0;background:#f7f3ec;color:#20251f;font-family:Pretendard,"Noto Sans KR",system-ui,-apple-system,sans-serif;line-height:1.75}.wrap{width:min(760px,calc(100% - 32px));margin:48px auto;background:#fffdfa;border:1px solid #e4e0d7;border-radius:24px;padding:36px;box-shadow:0 18px 50px rgba(32,37,31,.08)}h1{letter-spacing:-.04em}h2{font-size:18px;margin-top:30px}p,li{color:#5f675f}a{color:#2f6a4f}.date{font-size:13px;color:#697068}@media(max-width:600px){.wrap{margin:16px auto;padding:24px}}</style></head><body><main class="wrap"><h1>개인정보 처리 안내</h1><p class="date">시행일: 2026년 7월 28일</p><p>청렴한 한끼는 청렴교육을 위한 시뮬레이션형 게임입니다. 현재 배포본은 별도의 회원가입이나 온라인 서버 전송 없이 작동합니다.</p><h2>저장되는 정보</h2><ul><li>사용자가 입력한 이름 또는 별명</li><li>게임 점수, 참여 횟수 및 문항 중복 방지를 위한 기록</li><li>효과음 설정</li></ul><p>위 정보는 사용 중인 브라우저의 로컬 저장소에만 보관됩니다.</p><h2>외부 전송 및 제3자 제공</h2><p>현재 버전은 정보를 외부 서버로 전송하거나 제3자에게 제공하지 않습니다.</p><h2>정보 삭제</h2><p>브라우저의 사이트 데이터 또는 로컬 저장소를 삭제하면 저장된 이름과 게임 기록도 삭제됩니다.</p><h2>온라인 랭킹 도입 시</h2><p>향후 온라인 데이터베이스나 통합 랭킹 기능을 연결하는 경우, 실제 수집 항목과 보유기간을 반영하여 이 안내를 개정해야 합니다.</p><p><a href="index.html">앱으로 돌아가기</a></p></main></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f4ed">
+
+  <title>개인정보 안내 | 청렴한 한끼</title>
+
+  <meta
+    name="description"
+    content="청렴한 한끼 서비스의 개인정보 및 게임 기록 처리 안내"
+  >
+
+  <style>
+    :root{
+      --bg:#f7f4ed;
+      --surface:#ffffff;
+      --surface-2:#f4f7f1;
+      --text:#23312a;
+      --muted:#68736d;
+      --line:#dfe5df;
+      --green:#2f6f57;
+      --green-dark:#245542;
+      --orange:#c97835;
+      --warning-bg:#fff8e8;
+      --warning-line:#efd69e;
+      --shadow:0 14px 38px rgba(39,60,49,.08);
+      --radius:22px;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans KR",
+        "Apple SD Gothic Neo",
+        "Malgun Gothic",
+        Arial,
+        sans-serif;
+      line-height:1.7;
+      word-break:keep-all;
+    }
+
+    a{
+      color:var(--green-dark);
+      text-underline-offset:3px;
+    }
+
+    a:hover{
+      text-decoration-thickness:2px;
+    }
+
+    .wrap{
+      width:min(960px,calc(100% - 32px));
+      margin:0 auto;
+      padding:38px 0 64px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:22px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .brand-mark{
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border-radius:13px;
+      background:#e8f1eb;
+      font-size:20px;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:42px;
+      padding:0 15px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--surface);
+      color:var(--text);
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    .hero{
+      background:
+        linear-gradient(
+          135deg,
+          #fff 0%,
+          #f4f8f2 100%
+        );
+
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:34px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#e8f1eb;
+      color:var(--green-dark);
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+
+    h1{
+      margin:0 0 12px;
+      font-size:clamp(29px,5vw,42px);
+      line-height:1.22;
+      letter-spacing:-.045em;
+    }
+
+    .lead{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+    }
+
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:24px;
+    }
+
+    .summary{
+      padding:18px;
+      background:rgba(255,255,255,.78);
+      border:1px solid var(--line);
+      border-radius:17px;
+    }
+
+    .summary b{
+      display:block;
+      margin-bottom:4px;
+      font-size:15px;
+    }
+
+    .summary span{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .notice{
+      margin:20px 0;
+      padding:18px 20px;
+      border:1px solid var(--warning-line);
+      background:var(--warning-bg);
+      border-radius:16px;
+      color:#5f512e;
+      font-size:14px;
+    }
+
+    .card{
+      margin-top:16px;
+      padding:28px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:0 8px 26px rgba(39,60,49,.05);
+    }
+
+    h2{
+      margin:0 0 14px;
+      font-size:21px;
+      letter-spacing:-.025em;
+    }
+
+    h3{
+      margin:20px 0 8px;
+      font-size:16px;
+    }
+
+    p{
+      margin:8px 0;
+      color:#3d4943;
+    }
+
+    ul{
+      margin:8px 0 0;
+      padding-left:21px;
+    }
+
+    li{
+      margin:5px 0;
+    }
+
+    .table-wrap{
+      width:100%;
+      overflow-x:auto;
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius:15px;
+    }
+
+    table{
+      width:100%;
+      min-width:660px;
+      border-collapse:collapse;
+      background:#fff;
+      font-size:14px;
+    }
+
+    th,
+    td{
+      padding:14px 15px;
+      text-align:left;
+      vertical-align:top;
+      border-bottom:1px solid var(--line);
+    }
+
+    th{
+      background:var(--surface-2);
+      font-weight:800;
+      color:#334139;
+    }
+
+    tr:last-child td{
+      border-bottom:0;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:3px 8px;
+      border-radius:999px;
+      background:#edf4ef;
+      color:var(--green-dark);
+      font-size:12px;
+      font-weight:800;
+      margin-right:5px;
+    }
+
+    .contact{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    .contact-box{
+      padding:17px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:var(--surface-2);
+    }
+
+    .contact-box b{
+      display:block;
+      margin-bottom:5px;
+    }
+
+    .contact-box span{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .footer{
+      padding:28px 6px 0;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .footer-links{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:10px 16px;
+      margin-bottom:8px;
+    }
+
+    @media(max-width:720px){
+
+      .wrap{
+        width:min(100% - 22px,960px);
+        padding-top:20px;
+      }
+
+      .hero{
+        padding:25px 21px;
+        border-radius:22px;
+      }
+
+      .summary-grid{
+        grid-template-columns:1fr;
+      }
+
+      .card{
+        padding:22px 19px;
+      }
+
+      .contact{
+        grid-template-columns:1fr;
+      }
+
+      .topbar{
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="wrap">
+
+    <div class="topbar">
+
+      <div class="brand">
+        <span
+          class="brand-mark"
+          aria-hidden="true"
+        >
+          🍲
+        </span>
+
+        <span>
+          청렴한 한끼
+        </span>
+      </div>
+
+      <a
+        class="back"
+        href="./index.html"
+      >
+        게임으로 돌아가기
+      </a>
+
+    </div>
+
+
+    <section class="hero">
+
+      <div class="eyebrow">
+        Privacy Notice
+      </div>
+
+      <h1>
+        개인정보 및 게임 기록 안내
+      </h1>
+
+      <p class="lead">
+        「청렴한 한끼」는 청렴교육 게임 운영,
+        전체 랭킹 제공 및 이용 통계 확인을 위해
+        필요한 범위에서 게임 기록을 처리합니다.
+        실명 대신 닉네임 사용을 권장합니다.
+      </p>
+
+
+      <div class="summary-grid">
+
+        <div class="summary">
+          <b>
+            최소한의 기록
+          </b>
+
+          <span>
+            닉네임, 익명 식별값,
+            게임 결과 중심
+          </span>
+        </div>
+
+
+        <div class="summary">
+          <b>
+            온라인 랭킹
+          </b>
+
+          <span>
+            개인 최고점 기준으로
+            랭킹 표시
+          </span>
+        </div>
+
+
+        <div class="summary">
+          <b>
+            통계 활용
+          </b>
+
+          <span>
+            참여자 수, 플레이 수,
+            정답·오답 분석
+          </span>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <div class="notice">
+
+      이 페이지는 「청렴한 한끼」 게임에서
+      처리되는 기록을 설명하기 위한
+      서비스별 안내입니다.
+
+      울산도시공사의 기관 전체 개인정보 처리에 관한 사항은
+
+      <a
+        href="https://www.umca.co.kr/umca/contents.ulsan?mId=001008001001000000"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        울산도시공사 개인정보 처리방침
+      </a>
+
+      을 함께 확인해 주세요.
+
+    </div>
+
+
+    <section class="card">
+
+      <h2>
+        1. 처리 목적
+      </h2>
+
+      <p>
+        게임 기록은 다음 목적 범위에서 이용합니다.
+      </p>
+
+      <ul>
+
+        <li>
+          청렴교육 게임의 정상적인 운영
+        </li>
+
+        <li>
+          개인 최고점 및
+          전체 온라인 랭킹 제공
+        </li>
+
+        <li>
+          게임 참여자 수와
+          플레이 횟수 집계
+        </li>
+
+        <li>
+          난이도별 이용 현황,
+          평균 점수 및 정답·오답 현황 등
+          교육 통계 분석
+        </li>
+
+        <li>
+          서비스 오류 확인 및
+          안정적인 운영
+        </li>
+
+      </ul>
+
+    </section>
+
+
+    <section class="card">
+
+      <h2>
+        2. 처리하는 정보
+      </h2>
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>구분</th>
+              <th>항목</th>
+              <th>용도</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr>
+
+              <td>
+                <span class="pill">
+                  사용자
+                </span>
+              </td>
+
+              <td>
+                셰프 닉네임
+              </td>
+
+              <td>
+                게임 화면 및
+                랭킹 표시
+              </td>
+
+            </tr>
+
+
+            <tr>
+
+              <td>
+                <span class="pill">
+                  식별
+                </span>
+              </td>
+
+              <td>
+                Firebase 익명 사용자 UID
+              </td>
+
+              <td>
+                동일 브라우저 사용자의
+                기록 구분 및 최고점 관리
+              </td>
+
+            </tr>
+
+
+            <tr>
+
+              <td>
+                <span class="pill">
+                  게임
+                </span>
+              </td>
+
+              <td>
+                난이도, 점수, 정답 수,
+                연속 정답, 플레이 횟수
+              </td>
+
+              <td>
+                게임 결과 및
+                랭킹·통계 제공
+              </td>
+
+            </tr>
+
+
+            <tr>
+
+              <td>
+                <span class="pill">
+                  문항
+                </span>
+              </td>
+
+              <td>
+                문항별 정답·오답 결과
+                또는 오답 문항 ID
+              </td>
+
+              <td>
+                교육 효과 및
+                문항별 오답률 분석
+              </td>
+
+            </tr>
+
+
+            <tr>
+
+              <td>
+                <span class="pill">
+                  시간
+                </span>
+              </td>
+
+              <td>
+                게임 시작·완료·갱신 시각
+              </td>
+
+              <td>
+                플레이 기록 관리 및 통계
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <h3>
+        입력을 권장하지 않는 정보
+      </h3>
+
+      <p>
+        전화번호, 이메일, 사번, 주소,
+        주민등록번호 등 개인을 직접 식별할 수 있는
+        정보는 입력하지 마세요.
+
+        랭킹에 닉네임이 공개될 수 있으므로
+        실명 대신 별도의 닉네임 사용을 권장합니다.
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h2>
+        3. 저장 및 이용 기간
+      </h2>
+
+      <p>
+        게임 기록은 온라인 랭킹 및
+        교육 통계 운영에 필요한 기간 동안 보유하며,
+        서비스 운영 목적이 달성되거나
+        운영이 종료되어 더 이상 필요하지 않은 경우
+        삭제합니다.
+
+        관계 법령 또는 울산도시공사 내부 기준에 따라
+        별도의 보존이 필요한 경우에는
+        해당 기준을 따릅니다.
+      </p>
+
+      <p>
+        브라우저에 저장되는 일부 로컬 기록은
+        이용자가 브라우저의 사이트 데이터 또는
+        저장공간을 삭제하면 함께 삭제될 수 있습니다.
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h2>
+        4. Firebase 이용 안내
+      </h2>
+
+      <p>
+        「청렴한 한끼」는 온라인 랭킹과
+        게임 기록 저장을 위해
+        Google의 Firebase 서비스를 이용할 수 있습니다.
+      </p>
+
+      <ul>
+
+        <li>
+          <b>Firebase Authentication</b>:
+          회원가입 없이 사용자를 구분하기 위한
+          익명 인증
+        </li>
+
+        <li>
+          <b>Cloud Firestore</b>:
+          닉네임, 점수, 게임 기록 및
+          랭킹 데이터 저장
+        </li>
+
+      </ul>
+
+      <p>
+        Cloud Firestore의 데이터베이스 위치는
+        프로젝트 설정에 따라 정해지며,
+        Firebase Authentication 등 일부 Firebase 서비스는
+        Google의 해외 인프라에서 처리될 수 있습니다.
+
+        구체적인 서비스 구성과 데이터 처리 위치는
+        Firebase의 공식 개인정보·보안 안내 및
+        운영기관의 개인정보 보호 기준을 따릅니다.
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h2>
+        5. 공개되는 정보
+      </h2>
+
+      <p>
+        전체 랭킹 화면에는 다음과 같은 정보가
+        다른 이용자에게 표시될 수 있습니다.
+      </p>
+
+      <ul>
+
+        <li>
+          셰프 닉네임
+        </li>
+
+        <li>
+          개인 최고점
+        </li>
+
+        <li>
+          최고점 당시 정답 수
+        </li>
+
+        <li>
+          게임 완료 횟수
+        </li>
+
+      </ul>
+
+      <p>
+        익명 사용자 UID와
+        문항별 상세 기록은
+        일반 랭킹 화면에 표시하지 않습니다.
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h2>
+        6. 안전성 확보 및 접근 통제
+      </h2>
+
+      <p>
+        온라인 데이터는
+        Firebase Authentication과
+        Cloud Firestore Security Rules를 이용해
+        접근 범위를 제한하도록 구성합니다.
+
+        일반 이용자는 허용된 범위의
+        랭킹 데이터를 조회하고
+        자신의 게임 기록을 저장하도록 하며,
+
+        관리자용 상세 통계는
+        필요한 권한을 가진 사용자만
+        접근할 수 있도록 구성합니다.
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h2>
+        7. 이용자의 권리 및 문의
+      </h2>
+
+      <p>
+        게임 기록과 관련하여 개인정보의
+        열람, 정정, 삭제 또는 처리에 관한
+        문의가 필요한 경우
+
+        울산도시공사의 개인정보 보호 담당부서에
+        문의할 수 있습니다.
+      </p>
+
+
+      <div class="contact">
+
+        <div class="contact-box">
+
+          <b>
+            개인정보 보호책임 부서
+          </b>
+
+          <span>
+            울산도시공사 기획감사실
+          </span>
+
+        </div>
+
+
+        <div class="contact-box">
+
+          <b>
+            개인정보 보호 담당자 문의
+          </b>
+
+          <span>
+            052-219-8415 /
+            052-219-8416
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <p style="margin-top:16px">
+
+        기관 전체의 개인정보
+        열람·정정·삭제·처리정지 절차와
+        권리행사 방법은
+
+        울산도시공사 개인정보 처리방침에서
+        확인할 수 있습니다.
+
+      </p>
+
+    </section>
+
+
+    <section class="card">
+
+      <h2>
+        8. 안내 내용의 변경
+      </h2>
+
+      <p>
+        게임의 데이터 저장 방식,
+        랭킹 기능 또는 이용 통계 항목이 변경되는 경우
+        이 안내 내용도 함께 변경할 수 있습니다.
+
+        중요한 변경이 있는 경우
+        이용자가 확인할 수 있도록
+        서비스 화면을 통해 안내합니다.
+      </p>
+
+      <p>
+        <b>
+          시행일: 2026년 8월 12일
+        </b>
+      </p>
+
+    </section>
+
+
+    <footer class="footer">
+
+      <div class="footer-links">
+
+        <a href="./index.html">
+          청렴한 한끼
+        </a>
+
+        <a
+          href="https://www.umca.co.kr/umca/contents.ulsan?mId=001008001001000000"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          울산도시공사 개인정보 처리방침
+        </a>
+
+      </div>
+
+      <div>
+        © Ulsan Metropolitan City Corporation
+        · 청렴한 한끼
+      </div>
+
+    </footer>
+
+  </main>
+
+</body>
+</html>
