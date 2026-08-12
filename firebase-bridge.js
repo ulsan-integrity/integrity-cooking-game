@@ -191,20 +191,40 @@ async function getRanking(maxRows=10){
 
 async function getPublicStats(){
   await ensureAuth();
-  const coll = collection(db, "leaderboard");
-  const snap = await getAggregateFromServer(coll, {
-    players: count(),
-    games: sum("gamesCompleted"),
-    averageBest: average("bestScore")
+
+  const snap = await getDocs(
+    collection(db, "leaderboard")
+  );
+
+  let players = 0;
+  let games = 0;
+  let totalBestScore = 0;
+
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+
+    players += 1;
+
+    games += Number(
+      data.gamesCompleted || 0
+    );
+
+    totalBestScore += Number(
+      data.bestScore || 0
+    );
   });
-  const data = snap.data();
+
+  const averageBest =
+    players > 0
+      ? totalBestScore / players
+      : 0;
+
   return {
-    players: Number(data.players || 0),
-    games: Number(data.games || 0),
-    averageBest: Number(data.averageBest || 0)
+    players,
+    games,
+    averageBest
   };
 }
-
 window.IntegrityCloud = {
   startGame,
   completeGame,
