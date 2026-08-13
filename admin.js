@@ -86,12 +86,52 @@ async function clearLeaderboard(){
   await fetchAll();
 }
 
+async function clearAllOperationalData(){
+  const first=confirm(
+    '전체 운영데이터를 초기화하면 players, leaderboard, sessions의 모든 기록이 삭제됩니다.\n\n' +
+    '참여자 수, 플레이 횟수, 랭킹, 평균 점수, 난이도 통계, 문항별 오답률이 모두 0으로 초기화됩니다.\n\n' +
+    '이 작업은 되돌릴 수 없습니다. 계속할까요?'
+  );
+  if(!first)return;
+
+  const phrase=prompt(
+    '정말 전체 운영데이터를 초기화하려면 정확히 "운영데이터초기화"를 입력하세요.'
+  );
+  if(phrase!=='운영데이터초기화')return;
+
+  setStatus('전체 운영데이터를 초기화하는 중입니다. 창을 닫지 마세요...');
+
+  const [sessionSnap, leaderSnap, playerSnap]=await Promise.all([
+    getDocs(collection(db,'sessions')),
+    getDocs(collection(db,'leaderboard')),
+    getDocs(collection(db,'players'))
+  ]);
+
+  // 브라우저와 Firestore에 무리가 가지 않도록 일정 개수씩 나누어 삭제합니다.
+  const refs=[
+    ...sessionSnap.docs.map(d=>d.ref),
+    ...leaderSnap.docs.map(d=>d.ref),
+    ...playerSnap.docs.map(d=>d.ref)
+  ];
+
+  const chunkSize=40;
+  for(let i=0;i<refs.length;i+=chunkSize){
+    const chunk=refs.slice(i,i+chunkSize);
+    await Promise.all(chunk.map(ref=>deleteDoc(ref)));
+  }
+
+  cache={players:[],leaders:[],sessions:[]};
+  await fetchAll();
+  setStatus('전체 운영데이터 초기화가 완료되었습니다. 참여자·플레이·랭킹·통계가 0부터 다시 집계됩니다.','ok');
+}
+
 $('loginForm').addEventListener('submit',async e=>{e.preventDefault();setStatus('로그인 중...');try{await signInWithEmailAndPassword(auth,$('email').value.trim(),$('password').value);$('password').value=''}catch(err){console.error(err);setStatus('로그인 실패: '+(err.code||err.message),'error')}});
 $('logoutBtn').addEventListener('click',()=>signOut(auth));
 $('refreshBtn').addEventListener('click',()=>fetchAll().catch(handleLoadError));
 $('searchInput').addEventListener('input',renderLeaderboard);
 $('leaderBody').addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;b.dataset.action==='rank'?deleteRanking(b.dataset.uid).catch(handleLoadError):deleteAll(b.dataset.uid).catch(handleLoadError)});
 $('clearLeaderboardBtn').addEventListener('click',()=>clearLeaderboard().catch(handleLoadError));
+$('clearAllDataBtn').addEventListener('click',()=>clearAllOperationalData().catch(handleLoadError));
 $('exportRankBtn').addEventListener('click',()=>{const rows=[['순위','UID','닉네임','최고점','최고정답','완료횟수','최고점달성시각']];sortLeaders(cache.leaders).forEach((x,i)=>rows.push([i+1,x.uid,x.nickname,num(x.bestScore),num(x.bestCorrect),num(x.gamesCompleted),timestampText(x.bestAchievedAt)]));downloadCsv('청렴한_한끼_랭킹.csv',rows)});
 $('exportSessionBtn').addEventListener('click',()=>{const rows=[['세션ID','UID','닉네임','난이도','상태','점수','정답','최대연속','문항ID','오답ID','완료시각']];cache.sessions.forEach(s=>rows.push([s.id,s.uid,s.nickname,s.difficulty,s.status,s.score??'',s.correct??'',s.maxStreak??'',Array.isArray(s.questionIds)?s.questionIds.join('|'):'',Array.isArray(s.wrongQuestionIds)?s.wrongQuestionIds.join('|'):'',timestampText(s.completedAt)]));downloadCsv('청렴한_한끼_게임기록.csv',rows)});
 
